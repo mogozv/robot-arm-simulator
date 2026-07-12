@@ -25,10 +25,10 @@ def forward_kinematics(joint_angles, dh_table):
     joint_angles: list of angles (in degrees) for each joint.
     dh_table: list of rows, each row is [theta, d, a, alpha].
     """
-    T = np.eye(4)
+    T = np.eye(4) #creates a 4x4 identity matrix
 
-    for i, (theta, d, a, alpha) in enumerate(dh_table):
-        T_i = dh_transform(joint_angles[i], d, a, alpha)
+    for i, (theta, d, a, alpha) in enumerate(dh_table):##unpacks the values from the dh_table and passes them to the dh_transform function
+        T_i = dh_transform(joint_angles[i], d, a, alpha)  #stores the transformation 4x4 matrix for the current joint
         T = np.matmul(T, T_i)
 
     return T
@@ -66,22 +66,22 @@ def plot_arm(joint_angles, dh_table):
 
     for i, (theta, d, a, alpha) in enumerate(dh_table):
         T_i = dh_transform(joint_angles[i], d, a, alpha)
-        T = np.matmul(T, T_i)
+        T = np.matmul(T, T_i) #multiplies the current transformation matrix with the new one to get the cumulative transformation
         x, y = T[0, 3], T[1, 3]
         positions.append((x, y))
 
         xs,ys = zip(*positions)
 
-        plt.figure(figsize=(6, 6))
-        plt.plot(xs, ys, 'o-', markersize=8, linewidth=3, color='blue')
-        plt.xlim(-3, 3)
-        plt.ylim(-3, 3)
-        plt.grid(True)
+        plt.figure(figsize=(6, 6)) #creates a new figure with a size of 6x6 inches
+        plt.plot(xs, ys, 'o-', markersize=8, linewidth=3, color='blue')# draws the arm by plotting the positions of the joints and connecting them with lines
+        plt.xlim(-3, 3)#set the plot range for the x-axis from -3 to 3 meters
+        plt.ylim(-3, 3)#set the plot range for the y-axis from -3 to 3 meters
+        plt.grid(True)#sets the grid to be visible on the plot
         plt.axis('equal')
         plt.title(f"Robotic Arm Configuration: {joint_angles}")
         plt.xlabel('x (m)')
         plt.ylabel('y (m)')
-        plt.show()
+        plt.show()#shows the plot
 
         dh_table_4dof = [
             [0, 0, 1.0, 0],
@@ -96,3 +96,4 @@ def plot_arm(joint_angles, dh_table):
         print("Config 2 4-DOF Arm (30°, 45°, 15°, -30°):", T[0:3, 3])
 
         plot_arm(joint_angles_4dof, dh_table_4dof)
+
