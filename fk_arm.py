@@ -34,17 +34,65 @@ def forward_kinematics(joint_angles, dh_table):
     return T
 
 # DH table for a 2‑joint planar arm
+#Extended for a 3-joint planar arm
 dh_table = [
     [0, 0, 1.0, 0],
-    [0, 0, 1.0, 0]
+    [0, 0, 1.0, 0],
+    [0, 0, 0.5 ,0],
+    [0, 0, 0.3, 0]
 ]
 
+
 # Test Config 1: θ₁ = 0°, θ₂ = 0°
-joint_angles = [0, 0]
+joint_angles = [0, 0, 0,0]
 T = forward_kinematics(joint_angles, dh_table)
-print("Config 1 (0°, 0°):", T[0:3, 3])
+print("Config 1 (0°, 0°, 0°, 0°):", T[0:3, 3])
 
 # Test Config 2: θ₁ = 30°, θ₂ = 45°
-joint_angles = [30, 45]
+joint_angles = [30, 45, 15, -30]
 T = forward_kinematics(joint_angles, dh_table)
-print("Config 2 (30°, 45°):", T[0:3, 3])
+print("Config 2 (30°, 45°, 15°, -30°):", T[0:3, 3])
+
+import matplotlib.pyplot as plt
+def plot_arm(joint_angles, dh_table):
+    """"
+    Plots the robotic arm in 2D using matplotlib.
+    joint_angles: list of angles (in degrees) for each joint.
+    dh_table: list of rows, each row is [theta, d, a, alpha].
+    """
+
+    T=np.eye(4)
+    positions = [(0,0)]  # Starting at the origin)]
+
+    for i, (theta, d, a, alpha) in enumerate(dh_table):
+        T_i = dh_transform(joint_angles[i], d, a, alpha)
+        T = np.matmul(T, T_i)
+        x, y = T[0, 3], T[1, 3]
+        positions.append((x, y))
+
+        xs,ys = zip(*positions)
+
+        plt.figure(figsize=(6, 6))
+        plt.plot(xs, ys, 'o-', markersize=8, linewidth=3, color='blue')
+        plt.xlim(-3, 3)
+        plt.ylim(-3, 3)
+        plt.grid(True)
+        plt.axis('equal')
+        plt.title(f"Robotic Arm Configuration: {joint_angles}")
+        plt.xlabel('x (m)')
+        plt.ylabel('y (m)')
+        plt.show()
+
+        dh_table_4dof = [
+            [0, 0, 1.0, 0],
+            [0, 0, 1.0, 0],
+            [0, 0, 0.5, 0],
+            [0, 0, 0.3, 0]
+            ]
+
+
+        joint_angles_4dof = [30, 45, 15, -30]
+        T = forward_kinematics(joint_angles_4dof, dh_table_4dof)
+        print("Config 2 4-DOF Arm (30°, 45°, 15°, -30°):", T[0:3, 3])
+
+        plot_arm(joint_angles_4dof, dh_table_4dof)
