@@ -1,5 +1,8 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
+# 1. Define the DH transformation function #
 def dh_transform(theta, d, a, alpha):
     """
     Returns a 4x4 homogeneous transformation matrix from DH parameters.
@@ -19,81 +22,93 @@ def dh_transform(theta, d, a, alpha):
     ])
     return matrix
 
+# 2. Define the forward kinematics function #
 def forward_kinematics(joint_angles, dh_table):
     """
     Calculates the end-effector position given joint angles and a DH table.
     joint_angles: list of angles (in degrees) for each joint.
     dh_table: list of rows, each row is [theta, d, a, alpha].
     """
-    T = np.eye(4) #creates a 4x4 identity matrix
+    T = np.eye(4)
 
-    for i, (theta, d, a, alpha) in enumerate(dh_table):##unpacks the values from the dh_table and passes them to the dh_transform function
-        T_i = dh_transform(joint_angles[i], d, a, alpha)  #stores the transformation 4x4 matrix for the current joint
+    for i, (theta, d, a, alpha) in enumerate(dh_table):
+        T_i = dh_transform(joint_angles[i], d, a, alpha)
         T = np.matmul(T, T_i)
 
     return T
 
-# DH table for a 2‑joint planar arm
-#Extended for a 3-joint planar arm
-dh_table = [
-    [0, 0, 1.0, 0],
-    [0, 0, 1.0, 0],
-    [0, 0, 0.5 ,0],
-    [0, 0, 0.3, 0]
-]
-
-
-# Test Config 1: θ₁ = 0°, θ₂ = 0°
-joint_angles = [0, 0, 0,0]
-T = forward_kinematics(joint_angles, dh_table)
-print("Config 1 (0°, 0°, 0°, 0°):", T[0:3, 3])
-
-# Test Config 2: θ₁ = 30°, θ₂ = 45°
-joint_angles = [30, 45, 15, -30]
-T = forward_kinematics(joint_angles, dh_table)
-print("Config 2 (30°, 45°, 15°, -30°):", T[0:3, 3])
-
-import matplotlib.pyplot as plt
-def plot_arm(joint_angles, dh_table):
-    """"
-    Plots the robotic arm in 2D using matplotlib.
+# 3. 3D visualisation #
+def plot_arm_3d(joint_angles, dh_table, title="3D Robotic Arm"):
+    """
+    Plots the robotic arm in 3D using matplotlib.
     joint_angles: list of angles (in degrees) for each joint.
     dh_table: list of rows, each row is [theta, d, a, alpha].
     """
-
-    T=np.eye(4)
-    positions = [(0,0)]  # Starting at the origin)]
+    T = np.eye(4)
+    positions = [(0, 0, 0)]
 
     for i, (theta, d, a, alpha) in enumerate(dh_table):
         T_i = dh_transform(joint_angles[i], d, a, alpha)
-        T = np.matmul(T, T_i) #multiplies the current transformation matrix with the new one to get the cumulative transformation
-        x, y = T[0, 3], T[1, 3]
-        positions.append((x, y))
+        T = np.matmul(T, T_i)
+        x, y, z = T[0, 3], T[1, 3], T[2, 3]
+        positions.append((x, y, z))
 
-        xs,ys = zip(*positions)
+    xs, ys, zs = zip(*positions)
 
-        plt.figure(figsize=(6, 6)) #creates a new figure with a size of 6x6 inches
-        plt.plot(xs, ys, 'o-', markersize=8, linewidth=3, color='blue')# draws the arm by plotting the positions of the joints and connecting them with lines
-        plt.xlim(-3, 3)#set the plot range for the x-axis from -3 to 3 meters
-        plt.ylim(-3, 3)#set the plot range for the y-axis from -3 to 3 meters
-        plt.grid(True)#sets the grid to be visible on the plot
-        plt.axis('equal')
-        plt.title(f"Robotic Arm Configuration: {joint_angles}")
-        plt.xlabel('x (m)')
-        plt.ylabel('y (m)')
-        plt.show()#shows the plot
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection='3d')
 
-        dh_table_4dof = [
-            [0, 0, 1.0, 0],
-            [0, 0, 1.0, 0],
-            [0, 0, 0.5, 0],
-            [0, 0, 0.3, 0]
-            ]
+    ax.plot(xs, ys, zs, 'o-', markersize=8, linewidth=3, color='blue', label='Arm')
+    ax.scatter(xs[-1], ys[-1], zs[-1], color='red', s=100, label='End-Effector')
+    ax.set_xlim(-3, 3)
+    ax.set_ylim(-3, 3)
+    ax.set_zlim(-3, 3)
+    ax.set_xlabel('x (m)')
+    ax.set_ylabel('y (m)')
+    ax.set_zlabel('z (m)')
+    ax.set_title(title)
+    ax.legend()
+    plt.show()
 
 
-        joint_angles_4dof = [30, 45, 15, -30]
-        T = forward_kinematics(joint_angles_4dof, dh_table_4dof)
-        print("Config 2 4-DOF Arm (30°, 45°, 15°, -30°):", T[0:3, 3])
+# 4. Tests
 
-        plot_arm(joint_angles_4dof, dh_table_4dof)
 
+# 2D Planar Arm
+dh_table_2d = [
+    [0, 0, 1.0, 0],
+    [0, 0, 1.0, 0],
+    [0, 0, 0.5, 0]
+]
+joint_angles_2d = [30, 45, 15]
+T = forward_kinematics(joint_angles_2d, dh_table_2d)
+print("2D Arm (30°, 45°, 15°):", T[0:3, 3])
+
+# 3D Arm with Twists
+dh_table_3d = [
+    [0, 0, 1.0, 0],
+    [0, 0, 1.0, 90],
+    [0, 0, 0.5, 0]
+]
+joint_angles_3d = [30, 45, 15]
+T = forward_kinematics(joint_angles_3d, dh_table_3d)
+print("3D Arm (30°, 45°, 15°):", T[0:3, 3])
+
+# 4D Arm with Twists
+dh_table_4d = [
+    [0, 0, 1.0, 0],
+    [0, 0, 1.0, 90],
+    [0, 0, 0.5, 0],
+    [0, 0, 0.3, -90]
+]
+joint_angles_4d = [0, 0, 0, 0]
+T = forward_kinematics(joint_angles_4d, dh_table_4d)
+print("4D Arm (0°, 0°, 0°, 0°):", T[0:3, 3])
+
+# 4D Arm with non-zero angles
+joint_angles_4dof = [30, 45, 15, -30]
+T = forward_kinematics(joint_angles_4dof, dh_table_4d)
+print("4D Arm (30°, 45°, 15°, -30°):", T[0:3, 3])
+
+# Visualise 3D Arm
+plot_arm_3d(joint_angles_3d, dh_table_3d, title="3D Robotic Arm (30°, 45°, 15°)")
