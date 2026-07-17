@@ -22,3 +22,22 @@ DH parameters are four numbers that describe the relationship between teo adjace
 
  ## My code
 I implemented 'dh_transform()' and 'forward_kinematics()' to calculate and find out the end-effector position. I verified the code against my own hand calculations for 2D,3D and 4D arms.
+
+## Tech Stack
+- Python
+- Numpy
+- Matplotlib( for 3d visualisation)
+
+## How to run
+1) Clone the repository
+2) Install dependecies: 'pip install numpy matplotlib'
+3) Run: 'python fk_arm.py'
+
+## Results so far
+<img width="944" height="524" alt="image" src="https://github.com/user-attachments/assets/603dc2c1-6885-40f5-a1a1-ddb1b163389d" />
+
+## Next steps for Project
+- Inverse Kinematics (IK)
+- PyBullet intergration
+- PID control
+
