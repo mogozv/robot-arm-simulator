@@ -1,0 +1,144 @@
+<!-- URDF means Unified Robotic Description Format	-->
+
+<!-- Visual is what shapes the robot has-->
+
+<!-- Inertia is how heavy the robot is -->
+
+<!-- Collision is what happens when things touch the robot-->
+
+<!-- Joints is how the joints move around-->
+
+
+
+<?xml version="1.0"?>
+<!-- Tells the computer that it is a xml file-->
+<robot name="planar_4dof"><!--This names the robot (should be obvious) -->
+	
+	<!-- BASE -->
+	<link name="base">
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<mass value="0.01"/><!--Gives the box weight(0.01kg) -->
+			<inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<box size="0.2 0.2 0.1"/><!--Gives the link a shape visually -->
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="0.2 0.2 0.1"/> 
+	 		</geometry>
+		</collision>
+	</link>
+
+	<!-- LINK 1 – CoM at 0.5m (middle) -->
+	<link name="link1">
+		<inertial>
+			<origin xyz="0.5 0 0" rpy="0 0 0"/>
+			<mass value="1.0"/>
+			<inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.01"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<box size="1.0 0.05 0.05"/>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="1.0 0.05 0.05"/>
+			</geometry>
+		</collision>
+	</link>
+
+	<!-- LINK 2 – CoM at 0.5m (middle) -->
+	<link name="link2">
+		<inertial>
+			<origin xyz="0.5 0 0" rpy="0 0 0"/>
+			<mass value="1.0"/>
+			<inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.01"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<box size="1.0 0.05 0.05"/>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="1.0 0.05 0.05"/>
+			</geometry>
+		</collision>
+	</link>
+
+	<!-- LINK 3 – CoM at 0.25m (middle) -->
+	<link name="link3">
+		<inertial>
+			<origin xyz="0.25 0 0" rpy="0 0 0"/>
+			<mass value="0.5"/>
+			<inertia ixx="0.05" ixy="0" ixz="0" iyy="0.05" iyz="0" izz="0.005"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<box size="0.5 0.05 0.05"/>	
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="0.5 0.05 0.05"/>
+			</geometry>
+		</collision>
+	</link>
+
+	<!-- LINK 4 – CoM at 0.15m (middle) -->
+	<link name="link4">
+		<inertial>
+			<origin xyz="0.15 0 0" rpy="0 0 0"/>
+			<mass value="0.3"/>
+			<inertia ixx="0.03" ixy="0" ixz="0" iyy="0.03" iyz="0" izz="0.003"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<box size="0.3 0.05 0.05"/>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<box size="0.3 0.05 0.05"/>
+			</geometry>
+		</collision>
+	</link>
+
+	<!-- JOINTS -->
+	<joint name="j1" type="revolute">
+		<parent link="base"/>
+		<child link="link1"/>
+		<origin xyz="1.0 0 0" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit lower="-3.14" upper="3.14"/>
+	</joint>
+
+	<joint name="j2" type="revolute">
+		<parent link="link1"/>
+		<child link="link2"/>
+		<origin xyz="1.0 0 0" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit lower="-3.14" upper="3.14"/>
+	</joint>
+
+	<joint name="j3" type="revolute">
+		<parent link="link2"/>
+		<child link="link3"/>
+		<origin xyz="0.5 0 0" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit lower="-3.14" upper="3.14"/>
+	</joint>
+
+	<joint name="j4" type="revolute">
+		<parent link="link3"/>
+		<child link="link4"/>
+		<origin xyz="0.3 0 0" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit lower="-3.14" upper="3.14"/>
+	</joint>
+</robot>
