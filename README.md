@@ -82,15 +82,25 @@ A PID controller is used to track target trajectories smoothly.
 
 ## Project Structure
 robot-arm-simulator/
+
 ├── README.md # This file
+
 ├── requirements.txt # Dependencies
+
 ├── fk_arm.py # Forward kinematics (DH + FK)
+
 ├── ik_arm.py # Inverse kinematics (2-joint analytical)
+
 ├── ik_arm_3dof.py # Inverse kinematics (3-DOF iterative)
+
 ├── ik_bullet.py # IK applied in PyBullet simulation
+
 ├── load_arm.py # Loads URDF and sets up PyBullet
+
 ├── planar_4dof.urdf # URDF file for the 4-DOF arm
+
 ├── pid.py # PID controller
+
 └── plotting.py # 3D visualisation functions
 
 ---
@@ -148,7 +158,7 @@ Mohammed Godir – Computer Science student at the University of Westminster
 
 LinkedIn:
 
-[LinkedIn](https://www.linkedin.com/in/mohammed-godir/)
+(https://www.linkedin.com/in/mohammed-godir/)
 
 
 
