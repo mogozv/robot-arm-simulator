@@ -101,7 +101,6 @@ robot-arm-simulator/
 
 ├── pid.py # PID controller
 
-└── plotting.py # 3D visualisation functions
 
 ---
 
